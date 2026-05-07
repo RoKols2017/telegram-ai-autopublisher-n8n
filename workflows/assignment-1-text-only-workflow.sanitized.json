@@ -1,0 +1,101 @@
+{
+  "name": "Assignment 1 - Text Only Workflow",
+  "active": false,
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "sanitized": true,
+    "purpose": "Webhook to OpenAI text generation to Telegram sendMessage"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telegram-ai-autopublisher",
+        "responseMode": "lastNode"
+      },
+      "id": "webhook-assignment-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "topic",
+              "value": "={{ $json.body.topic || $json.topic }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-topic-a1",
+      "name": "Set Topic",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "model": "gpt-4.1-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You write concise, high-quality Telegram channel posts about AI automation."
+            },
+            {
+              "role": "user",
+              "content": "={{ 'Write one Telegram-ready post about: ' + $json.topic }}"
+            }
+          ]
+        },
+        "simplifyOutput": true
+      },
+      "id": "openai-text-a1",
+      "name": "OpenAI Text",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [780, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "<OPENAI_CREDENTIAL_ID>",
+          "name": "<OPENAI_CREDENTIAL_NAME>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://api.telegram.org/bot' + '<TELEGRAM_BOT_TOKEN>' + '/sendMessage' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { chat_id: '<TELEGRAM_CHAT_ID>', text: $json.text || $json.output_text || $json.response || '<GENERATED_TEXT>' } }}"
+      },
+      "id": "telegram-sendmessage-a1",
+      "name": "Telegram sendMessage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1040, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Set Topic", "type": "main", "index": 0 }]]
+    },
+    "Set Topic": {
+      "main": [[{ "node": "OpenAI Text", "type": "main", "index": 0 }]]
+    },
+    "OpenAI Text": {
+      "main": [[{ "node": "Telegram sendMessage", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<SANITIZED_VERSION_ID>",
+  "tags": []
+}

@@ -1,0 +1,211 @@
+{
+  "name": "Assignment 2 - Text Image Auth Workflow",
+  "active": false,
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "sanitized": true,
+    "purpose": "Authorized webhook to OpenAI text and image generation to Telegram sendPhoto"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telegram-ai-autopublisher-secure",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-assignment-2",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [220, 340]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.headers.authorization || '' }}",
+              "operation": "equal",
+              "value2": "Bearer <N8N_BEARER_TOKEN>"
+            }
+          ]
+        }
+      },
+      "id": "if-auth-a2",
+      "name": "Auth Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [470, 340]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "topic",
+              "value": "={{ $json.body.topic || $json.topic }}",
+              "type": "string"
+            },
+            {
+              "name": "tone",
+              "value": "={{ $json.body.tone || $json.tone || 'clear and practical' }}",
+              "type": "string"
+            },
+            {
+              "name": "audience",
+              "value": "={{ $json.body.audience || $json.audience || 'Telegram subscribers interested in AI automation' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-inputs-a2",
+      "name": "Set Inputs",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [730, 220]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "model": "gpt-4.1-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Write concise, useful Telegram posts for a technical audience."
+            },
+            {
+              "role": "user",
+              "content": "={{ 'Topic: ' + $json.topic + '\nTone: ' + $json.tone + '\nAudience: ' + $json.audience + '\nWrite a Telegram post.' }}"
+            }
+          ]
+        },
+        "simplifyOutput": true
+      },
+      "id": "openai-text-a2",
+      "name": "OpenAI Text",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [990, 220],
+      "credentials": {
+        "openAiApi": {
+          "id": "<OPENAI_CREDENTIAL_ID>",
+          "name": "<OPENAI_CREDENTIAL_NAME>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "generated_text",
+              "value": "={{ $json.text || $json.output_text || $json.response }}",
+              "type": "string"
+            },
+            {
+              "name": "image_prompt",
+              "value": "={{ 'Create a clean editorial illustration for this Telegram post: ' + ($json.text || $json.output_text || $json.response) }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "build-image-prompt-a2",
+      "name": "Build Image Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1240, 220]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "generate",
+        "prompt": "={{ $json.image_prompt }}",
+        "size": "1024x1024"
+      },
+      "id": "openai-image-a2",
+      "name": "OpenAI Image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1490, 220],
+      "credentials": {
+        "openAiApi": {
+          "id": "<OPENAI_CREDENTIAL_ID>",
+          "name": "<OPENAI_CREDENTIAL_NAME>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://api.telegram.org/bot' + '<TELEGRAM_BOT_TOKEN>' + '/sendPhoto' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { chat_id: '<TELEGRAM_CHAT_ID>', photo: $json.data?.[0]?.url || $json.image_url || '<GENERATED_IMAGE_URL>', caption: $json.generated_text || '<GENERATED_TEXT>' } }}"
+      },
+      "id": "telegram-sendphoto-a2",
+      "name": "Telegram sendPhoto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1750, 220]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { status: 200, result: 'published' } }}",
+        "options": {}
+      },
+      "id": "respond-success-a2",
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2000, 220]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 403,
+        "responseBody": "={{ { status: 403, error: 'forbidden' } }}",
+        "options": {}
+      },
+      "id": "respond-forbidden-a2",
+      "name": "Respond 403",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [730, 480]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Auth Check", "type": "main", "index": 0 }]]
+    },
+    "Auth Check": {
+      "main": [
+        [{ "node": "Set Inputs", "type": "main", "index": 0 }],
+        [{ "node": "Respond 403", "type": "main", "index": 0 }]
+      ]
+    },
+    "Set Inputs": {
+      "main": [[{ "node": "OpenAI Text", "type": "main", "index": 0 }]]
+    },
+    "OpenAI Text": {
+      "main": [[{ "node": "Build Image Prompt", "type": "main", "index": 0 }]]
+    },
+    "Build Image Prompt": {
+      "main": [[{ "node": "OpenAI Image", "type": "main", "index": 0 }]]
+    },
+    "OpenAI Image": {
+      "main": [[{ "node": "Telegram sendPhoto", "type": "main", "index": 0 }]]
+    },
+    "Telegram sendPhoto": {
+      "main": [[{ "node": "Respond 200", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<SANITIZED_VERSION_ID>",
+  "tags": []
+}

@@ -1,0 +1,22 @@
+{
+  "project": {
+    "name": "telegram-ai-autopublisher-n8n",
+    "description": "Application-layer AI automation workflow for Telegram content generation on top of self-hosted n8n infrastructure.",
+    "stack": [
+      "n8n",
+      "OpenAI API",
+      "Telegram Bot API",
+      "Python requests",
+      "Docker",
+      "Linux VPS"
+    ]
+  },
+  "repository": {
+    "defaultDocs": [
+      "README.md",
+      "README.en.md",
+      "docs/architecture.md",
+      "docs/security.md"
+    ]
+  }
+}
