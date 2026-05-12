@@ -1,15 +1,84 @@
+# ============================================
+# Environment variables / local secrets
+# ============================================
 .env
+.env.*
+!.env.example
+
+
+# ============================================
+# Virtual environments
+# ============================================
+.venv/
+venv/
+env/
+ENV/
+
+
+# ============================================
+# Python cache / bytecode
+# ============================================
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+
+# ============================================
+# Test, lint and coverage cache
+# ============================================
 .pytest_cache/
 .mypy_cache/
-.DS_Store
-.opencode/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
 
-# Local workflow exports may contain credentials before sanitization
-workflows/*.raw.json
-workflows/*.unsanitized.json
 
+# ============================================
+# Build artifacts
+# ============================================
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+
+# ============================================
 # Local runtime artifacts
+# ============================================
 logs/
 tmp/
+*.log
+*.tmp
+*.bak
+
+
+# ============================================
+# IDE / editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+
+# ============================================
+# OS files
+# ============================================
+.DS_Store
+Thumbs.db
+
+
+# ============================================
+# OpenCode local files
+# ============================================
+.opencode/
+
+
+# ============================================
+# Local workflow exports
+# May contain credentials before sanitization
+# ============================================
+workflows/*.raw.json
+workflows/*.unsanitized.json
