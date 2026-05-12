@@ -1,0 +1,319 @@
+{
+  "name": "PErr10-6",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telegram-ai-autopublisher-secure",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "8d00a32d-0485-46ba-a975-69f03d573f33",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        128,
+        16
+      ],
+      "webhookId": "d10085b9-36d0-46f2-b92a-8e38754d78f0",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ukCV1RcfPHhges3C",
+          "name": "Auth account 10-6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "topic",
+              "value": "={{ $json.body.topic || $json.topic }}",
+              "type": "string"
+            },
+            {
+              "name": "tone",
+              "value": "={{ $json.body.tone || $json.tone || 'clear and practical' }}",
+              "type": "string"
+            },
+            {
+              "name": "audience",
+              "value": "={{ $json.body.audience || $json.audience || 'Telegram subscribers interested in AI automation' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fd871a23-98c7-4e98-9909-bd0118b14e06",
+      "name": "Set Inputs",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "generated_text",
+              "value": "={{ $json.message.content }}",
+              "type": "string",
+              "id": "ceba4366-f8c5-4213-96c6-54271539a7f1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6a3334f5-9ec3-4c0e-97e5-381c0f1660e5",
+      "name": "Build Image Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a prompt engineer for premium AI-generated editorial illustrations used as Telegram post covers. Produce exactly one compact image-generation prompt and nothing else. Keep it visually specific, clean, and model-friendly. Rules: 1) Focus on one strong central scene. 2) Translate the post into visual objects, symbols, dashboards, automation motifs, growth metaphors, or abstract tech elements instead of repeating the post text. 3) Style: premium editorial illustration, modern minimal, polished startup-tech aesthetic, clean composition, high detail, balanced layout, strong focal point, soft cinematic lighting, cohesive premium palette. 4) Default to no people unless clearly necessary. 5) Explicitly forbid all text artifacts: no text, no letters, no captions, no labels, no logos, no watermark, no UI screenshot, no poster text, no gibberish typography. 6) Avoid clutter, collage look, distorted anatomy, duplicated objects, muddy details, and chaotic backgrounds. 7) Return only the final prompt in 60-90 words."
+            },
+            {
+              "role": "user",
+              "content": "={{ 'Topic: ' + $node[\"Set Inputs\"].json.topic + '\nAudience: ' + $node[\"Set Inputs\"].json.audience + '\nTone: ' + $node[\"Set Inputs\"].json.tone + '\nTelegram post text: ' + $node[\"Build Image Prompt\"].json.generated_text }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 180
+        }
+      },
+      "id": "83d267aa-1b5a-4be4-bc77-baf4ca42f8ba",
+      "name": "Image Prompt LLM",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1152,
+        16
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "iy60WuHbgsgZZwtO",
+          "name": "PErr10-5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "model": "gpt-image-1",
+        "prompt": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "1d62108d-8249-4b97-ad30-2a9a9e692eef",
+      "name": "OpenAI Image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1408,
+        16
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "iy60WuHbgsgZZwtO",
+          "name": "PErr10-5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://api.telegram.org/bot' + '<BOT TOKEN>' + '/sendPhoto' }}",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "<CHAT ID>"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $node[\"Build Image Prompt\"].json.generated_text }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "photo",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ec1478b5-1577-428b-a1af-637c1320ecb6",
+      "name": "Telegram sendPhoto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1664,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { status: 200, result: 'published' } }}",
+        "options": {}
+      },
+      "id": "a2ef54b5-0602-496f-9234-31beec88099f",
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ 'Write one Telegram-ready post about: ' + $json.topic }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b56e94bd-ba0b-4da1-87f7-4a8df61d0e65",
+      "name": "OpenAI Text1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        576,
+        16
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "iy60WuHbgsgZZwtO",
+          "name": "PErr10-5"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Inputs": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Text1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Image Prompt": {
+      "main": [
+        [
+          {
+            "node": "Image Prompt LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Prompt LLM": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Image": {
+      "main": [
+        [
+          {
+            "node": "Telegram sendPhoto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram sendPhoto": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Text1": {
+      "main": [
+        [
+          {
+            "node": "Build Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fa891dc4-849f-4fd2-8e3e-6eb1e7a72623",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80b27056f2b970225650e50079f5524bea157767b4ce587a5d92846bd5a0723f"
+  },
+  "id": "tcXXYMMOk42PEnYd",
+  "tags": []
+}

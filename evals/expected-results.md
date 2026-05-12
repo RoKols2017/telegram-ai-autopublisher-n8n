@@ -1,12 +1,12 @@
 # Expected Results
 
-## Assignment 1
+## Text-Only MVP
 
 - HTTP `200`
 - one Telegram text post
 - successful `n8n` execution
 
-## Assignment 2
+## Full Workflow
 
 - HTTP `200` with correct bearer token
 - HTTP `403` without token

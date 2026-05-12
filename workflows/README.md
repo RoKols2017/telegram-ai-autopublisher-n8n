@@ -4,8 +4,8 @@ This directory contains sanitized `n8n` exports only.
 
 ## Files
 
-- `assignment-1-text-only-workflow.sanitized.json`
-- `assignment-2-text-image-auth-workflow.sanitized.json`
+- `text-only-mvp-workflow.sanitized.json`
+- `full-text-image-auth-workflow.sanitized.json`
 
 ## Import steps
 

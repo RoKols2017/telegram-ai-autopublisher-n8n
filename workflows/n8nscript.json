@@ -1,0 +1,224 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-post",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -128,
+        -32
+      ],
+      "id": "a73569f9-4a98-4a19-aa40-d7aea15ba9dc",
+      "name": "Webhook",
+      "webhookId": "8770b0ee-ad8a-4d7c-85cd-9701aec8667f",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "9jVGa4pHsZN0yZ9o",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8240280201:AAEGsBkIfkjUi-vUm2EqMZi3JrI4A6AkZ1k/sendPhoto",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003802220003"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $node[\"OpenAI\"].json.output[0].content[0].text }}"
+            },
+            {
+              "name": "parse_mode",
+              "value": "HTML"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "photo",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        848,
+        -32
+      ],
+      "id": "80b093d0-67fa-4c94-b1d6-af4121014632",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Ты профессиональный редактор Telegram-каналов и копирайтер.\n\nТвоя задача — писать короткие, естественные и завершённые Telegram-посты.\n\nСтрогие ограничения:\n- Максимальный размер ответа: 200 токенов\n- Текст должен быть ЗАВЕРШЁННЫМ, нельзя обрывать мысли\n- Если не помещается в лимит — сокращай формулировки\n- Никаких незаконченных предложений\n- Пост должен выглядеть цельным и логически завершённым\n\nСтиль и формат:\n- Живой, человеческий язык\n- Без воды, длинных вступлений и канцелярита\n- Без фраз вроде \"Сегодня поговорим\", \"В современном мире\"\n- Допустимы умеренные эмодзи\n- Короткие абзацы приветствуются\n- Структура: хук → ценность → завершение\n\nПиши так, чтобы пост выглядел как реальная публикация в Telegram."
+            },
+            {
+              "content": "={{ $json.body.topic }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 250
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "bce173ba-d80e-461e-ba16-36b644b901f7",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "jYvyrf7XaVXOT56r",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "model": "gpt-image-1",
+        "prompt": "={{ $node[\"Prompt\"].json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        656,
+        -32
+      ],
+      "id": "19498830-bca1-4d06-925a-5785fc812182",
+      "name": "Generate an image",
+      "credentials": {
+        "openAiApi": {
+          "id": "jYvyrf7XaVXOT56r",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Ты — prompt-инженер для генерации изображений (обложек) под Telegram-посты.\n\nНа вход ты получаешь текст Telegram-поста. Твоя задача — создать ОДИН короткий, чёткий промпт для генерации изображения, которое будет визуальной обложкой к этому посту.\n\nСтрогие правила:\n- Выводи ТОЛЬКО текст промпта, без кавычек, без списков, без пояснений, без Markdown\n- Максимум 60–90 слов\n- Не используй слова “telegram”, “post”, “caption”, “text overlay”\n- Запрещены любые надписи на изображении: no text, no letters, no logos, no watermark\n- Не повторяй пост дословно и не перечисляй пункты — выдели 1–2 ключевые идеи и переведи их в визуальные объекты/сцену\n- Стиль: modern minimal, clean composition, high contrast, soft lighting, tech/digital aesthetic\n- Композиция: один главный объект в центре + простой фон, без визуального шума\n- Избегай людей и лиц, если в посте явно не требуются (по умолчанию: без людей)\n\nФормат промпта (обязательно соблюдай порядок):\n1) Короткое описание сцены (1–2 предложения)\n2) Ключевые объекты (через запятую)\n3) Стиль/материалы/свет\n4) Ограничения: “no text, no watermark, no logo”"
+            },
+            {
+              "content": "={{ $node[\"OpenAI\"].json.output[0].content[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        -32
+      ],
+      "id": "c2cea84d-f5ad-4c0c-a812-8f7e2ba9fd00",
+      "name": "Prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "jYvyrf7XaVXOT56r",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "885b77ff-6d2a-4904-9f10-691f50f59db6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8dd5bda5ba9d6b62e1587d223b80d5173414ef8d4b6f46f87a4a76617be22208"
+  },
+  "id": "it2EyuJSOdS7hIrJOHT_a",
+  "tags": []
+}

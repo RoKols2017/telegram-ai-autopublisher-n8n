@@ -1,5 +1,7 @@
 # telegram-ai-autopublisher-n8n
 
+> Application-layer AI automation workflow for Telegram content generation, built on top of self-hosted `n8n`/VPS infrastructure.
+
 Production-style `n8n` workflow for AI-generated Telegram posts with OpenAI text/image generation, Telegram Bot API publishing, Bearer-token webhook auth and Docker/VPS deployment.
 
 English version: [README.en.md](README.en.md)
@@ -17,6 +19,15 @@ English version: [README.en.md](README.en.md)
 - Telegram Bot API Integrator
 - Docker / VPS practitioner
 - Engineer who separates infrastructure layer from application workflow layer
+
+## Key Features
+
+- `n8n` webhook workflow for inbound content requests
+- OpenAI text generation for Telegram-ready posts
+- separate image prompt generation and image generation stages
+- Telegram Bot API publishing via `sendMessage` and `sendPhoto`
+- Bearer-token webhook protection for production-style access control
+- sanitized workflow exports and Python test helpers for public GitHub publishing
 
 ## Архитектура
 
@@ -46,8 +57,8 @@ Infrastructure layer already exists in separate repositories and notes. This rep
 
 ## Repository Scope
 
-- Assignment 1: `Webhook -> OpenAI Text -> Telegram sendMessage`
-- Assignment 2: `Webhook + Bearer Auth -> OpenAI Text -> Image Prompt -> Image Generation -> Telegram sendPhoto`
+- Text-Only MVP: `Webhook -> OpenAI Text -> Telegram sendMessage`
+- Full Workflow: `Webhook + Bearer Auth -> OpenAI Text -> Image Prompt -> Image Generation -> Telegram sendPhoto`
 - Sanitized `n8n` workflow exports
 - Testing scripts for local and server webhooks
 - Security and troubleshooting docs
@@ -72,17 +83,29 @@ docker ps
 
 | Guide | Description |
 |-------|-------------|
-| [Assignment 1](docs/assignment-1-local-text-workflow.md) | Local MVP text-only workflow |
-| [Assignment 2](docs/assignment-2-full-text-image-workflow.md) | Full text + image + auth workflow |
-| [Architecture](docs/architecture.md) | Application-layer design boundaries |
-| [Local Deployment](docs/deployment-local.md) | Local `n8n` run and workflow testing |
-| [VPS Deployment](docs/deployment-vps.md) | Import and activate on self-hosted `n8n` |
-| [Security](docs/security.md) | Secret hygiene and webhook protection |
-| [Telegram API](docs/telegram-api.md) | `sendMessage` and `sendPhoto` usage |
-| [n8n JSON Paths](docs/n8n-json-paths.md) | Expression and output mapping notes |
-| [Troubleshooting](docs/troubleshooting.md) | Common failures and fixes |
-| [Portfolio Case RU](docs/portfolio-case.ru.md) | Russian portfolio framing |
-| [Portfolio Case EN](docs/portfolio-case.en.md) | English portfolio framing |
+| [Docs Index](docs/README.md) | Language selector for full documentation |
+| [RU: Text-Only MVP](docs/ru/text-only-mvp-workflow.md) | Minimal text publishing workflow |
+| [RU: Full Workflow](docs/ru/full-workflow.md) | Protected text + image workflow |
+| [RU: Architecture](docs/ru/architecture.md) | Application-layer boundaries |
+| [RU: Local Deployment](docs/ru/deployment-local.md) | Local `n8n` run and testing |
+| [RU: VPS Deployment](docs/ru/deployment-vps.md) | Import into existing self-hosted `n8n` |
+| [RU: Security](docs/ru/security.md) | Secret hygiene and auth rules |
+| [RU: Telegram API](docs/ru/telegram-api.md) | Publishing method details |
+| [RU: JSON Paths](docs/ru/n8n-json-paths.md) | Expression mapping notes |
+| [RU: PowerShell Token](docs/ru/bearer-token-powershell.md) | Bearer token generation guide |
+| [RU: Troubleshooting](docs/ru/troubleshooting.md) | Common runtime failures |
+| [RU: Portfolio Case](docs/ru/portfolio-case.md) | Russian portfolio framing |
+| [EN: Text-Only MVP](docs/en/text-only-mvp-workflow.md) | Minimal text publishing workflow |
+| [EN: Full Workflow](docs/en/full-workflow.md) | Protected text + image workflow |
+| [EN: Architecture](docs/en/architecture.md) | Application-layer boundaries |
+| [EN: Local Deployment](docs/en/deployment-local.md) | Local `n8n` run and testing |
+| [EN: VPS Deployment](docs/en/deployment-vps.md) | Import into existing self-hosted `n8n` |
+| [EN: Security](docs/en/security.md) | Secret hygiene and auth rules |
+| [EN: Telegram API](docs/en/telegram-api.md) | Publishing method details |
+| [EN: JSON Paths](docs/en/n8n-json-paths.md) | Expression mapping notes |
+| [EN: PowerShell Token](docs/en/bearer-token-powershell.md) | Bearer token generation guide |
+| [EN: Troubleshooting](docs/en/troubleshooting.md) | Common runtime failures |
+| [EN: Portfolio Case](docs/en/portfolio-case.md) | English portfolio framing |
 
 ## Security
 

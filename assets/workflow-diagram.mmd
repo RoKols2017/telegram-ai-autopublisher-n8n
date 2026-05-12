@@ -1,0 +1,9 @@
+flowchart TD
+    A[n8n Webhook] --> B[n8n Set Inputs]
+    B --> C{n8n IF Auth Check}
+    C -->|Valid| D[n8n OpenAI Text]
+    D --> E[n8n Set Build Image Prompt]
+    E --> F[n8n OpenAI Image]
+    F --> G[n8n HTTP Request<br/>Telegram sendPhoto]
+    G --> H[n8n Respond to Webhook<br/>200 OK]
+    C -->|Invalid| I[n8n Respond to Webhook<br/>403 Forbidden]

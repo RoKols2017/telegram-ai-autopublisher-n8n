@@ -2,7 +2,7 @@
 
 ## Overview
 
-Public portfolio repository for an application-layer AI automation workflow built on top of an existing self-hosted `n8n` infrastructure. The project packages two Prompt Engineering 2.0 assignments as a production-style Telegram autopublishing case with OpenAI text and image generation, webhook authorization, testing scripts, and portfolio documentation.
+Public portfolio repository for an application-layer AI automation workflow built on top of an existing self-hosted `n8n` infrastructure. The project presents a production-style Telegram autopublishing MVP with OpenAI text and image generation, webhook authorization, testing scripts, and bilingual portfolio documentation.
 
 ## Core Features
 

@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-This repository documents an application-layer AI automation workflow built on top of an existing self-hosted `n8n` infrastructure. It packages two Prompt Engineering 2.0 assignments as a portfolio-ready Telegram autopublishing case with sanitized workflow exports, prompts, helper scripts, and documentation.
+This repository documents an application-layer AI automation workflow built on top of an existing self-hosted `n8n` infrastructure. It packages a portfolio-ready Telegram autopublishing MVP with sanitized workflow exports, prompts, helper scripts, and bilingual documentation.
 
 ## Tech Stack
 
@@ -23,11 +23,11 @@ This repository documents an application-layer AI automation workflow built on t
 |-- .ai-factory/             # AI Factory project metadata and architecture docs
 |-- .opencode/               # Local AI skill installation directory
 |-- assets/                  # Diagram placeholders for portfolio visuals
-|-- docs/                    # Main technical documentation and case-study narrative
+|-- docs/                    # Bilingual technical documentation split into ru/ and en/
 |-- evals/                   # Evaluation notes, checklists, failure cases, test topics
-|-- notes/                   # Course/lesson summary notes
+|-- notes/                   # Internal notes that are not part of the public docs flow
 |-- prompts/                 # Versioned prompt assets separated from workflows
-|-- screenshots/             # Screenshot placeholders grouped by assignment
+|-- screenshots/             # Portfolio screenshots grouped by workflow stage
 |-- scripts/                 # Python helper scripts for webhook tests and sanitization
 |-- workflows/               # Sanitized n8n workflow exports for import into n8n
 |-- .ai-factory.json         # Installed AI Factory skills metadata
@@ -48,8 +48,8 @@ This repository documents an application-layer AI automation workflow built on t
 | `README.md` | Main repository landing page and positioning |
 | `README.en.md` | English version of the repository overview |
 | `main.py` | Minimal manual webhook client for local or VPS tests |
-| `workflows/assignment-1-text-only-workflow.sanitized.json` | MVP text-only n8n workflow export |
-| `workflows/assignment-2-text-image-auth-workflow.sanitized.json` | Full text + image + auth n8n workflow export |
+| `workflows/text-only-mvp-workflow.sanitized.json` | Text-only MVP n8n workflow export |
+| `workflows/full-text-image-auth-workflow.sanitized.json` | Full text + image + auth workflow export |
 | `scripts/sanitize_workflow_export.py` | Sanitizes exported workflow JSON before commit |
 | `.ai-factory/DESCRIPTION.md` | Project specification and stack summary |
 
@@ -59,17 +59,29 @@ This repository documents an application-layer AI automation workflow built on t
 |----------|------|-------------|
 | README | `README.md` | Project landing page in Russian |
 | English README | `README.en.md` | English project landing page |
-| Assignment 1 | `docs/assignment-1-local-text-workflow.md` | Local MVP workflow walkthrough |
-| Assignment 2 | `docs/assignment-2-full-text-image-workflow.md` | Full protected text+image workflow walkthrough |
-| Architecture | `docs/architecture.md` | High-level workflow architecture overview |
-| Local Deployment | `docs/deployment-local.md` | Local n8n startup and testing |
-| VPS Deployment | `docs/deployment-vps.md` | VPS import and activation steps |
-| Security | `docs/security.md` | Secret handling and sanitization rules |
-| Telegram API | `docs/telegram-api.md` | Telegram publishing method notes |
-| n8n JSON Paths | `docs/n8n-json-paths.md` | Expression mapping and path debugging |
-| Troubleshooting | `docs/troubleshooting.md` | Common failure modes and fixes |
-| Portfolio Case RU | `docs/portfolio-case.ru.md` | Russian portfolio framing |
-| Portfolio Case EN | `docs/portfolio-case.en.md` | English portfolio framing |
+| Docs Index | `docs/README.md` | Language selector for docs |
+| RU Text-Only MVP | `docs/ru/text-only-mvp-workflow.md` | Minimal text workflow in Russian |
+| RU Full Workflow | `docs/ru/full-workflow.md` | Full protected workflow in Russian |
+| RU Architecture | `docs/ru/architecture.md` | Architecture overview in Russian |
+| RU Local Deployment | `docs/ru/deployment-local.md` | Local setup in Russian |
+| RU VPS Deployment | `docs/ru/deployment-vps.md` | VPS activation in Russian |
+| RU Security | `docs/ru/security.md` | Security rules in Russian |
+| RU Telegram API | `docs/ru/telegram-api.md` | Telegram publishing in Russian |
+| RU JSON Paths | `docs/ru/n8n-json-paths.md` | n8n path notes in Russian |
+| RU PowerShell Token | `docs/ru/bearer-token-powershell.md` | Token guide in Russian |
+| RU Troubleshooting | `docs/ru/troubleshooting.md` | Failure cases in Russian |
+| RU Portfolio Case | `docs/ru/portfolio-case.md` | Portfolio framing in Russian |
+| EN Text-Only MVP | `docs/en/text-only-mvp-workflow.md` | Minimal text workflow in English |
+| EN Full Workflow | `docs/en/full-workflow.md` | Full protected workflow in English |
+| EN Architecture | `docs/en/architecture.md` | Architecture overview in English |
+| EN Local Deployment | `docs/en/deployment-local.md` | Local setup in English |
+| EN VPS Deployment | `docs/en/deployment-vps.md` | VPS activation in English |
+| EN Security | `docs/en/security.md` | Security rules in English |
+| EN Telegram API | `docs/en/telegram-api.md` | Telegram publishing in English |
+| EN JSON Paths | `docs/en/n8n-json-paths.md` | n8n path notes in English |
+| EN PowerShell Token | `docs/en/bearer-token-powershell.md` | Token guide in English |
+| EN Troubleshooting | `docs/en/troubleshooting.md` | Failure cases in English |
+| EN Portfolio Case | `docs/en/portfolio-case.md` | Portfolio framing in English |
 
 ## AI Context Files
 

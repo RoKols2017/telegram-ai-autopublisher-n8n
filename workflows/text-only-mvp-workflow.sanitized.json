@@ -1,5 +1,5 @@
 {
-  "name": "Assignment 1 - Text Only Workflow",
+  "name": "Text-Only MVP Workflow",
   "active": false,
   "meta": {
     "templateCredsSetupCompleted": false,
@@ -13,7 +13,7 @@
         "path": "telegram-ai-autopublisher",
         "responseMode": "lastNode"
       },
-      "id": "webhook-assignment-1",
+      "id": "webhook-text-only-mvp",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,

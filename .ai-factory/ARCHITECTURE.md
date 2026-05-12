@@ -18,11 +18,11 @@ Layered architecture fits this project because the codebase is small, the operat
 .
 |-- .ai-factory/            # AI Factory context and project architecture rules
 |-- assets/                 # Static portfolio visuals and diagram placeholders
-|-- docs/                   # Explanatory layer: architecture, assignments, security, deployment
+|-- docs/                   # Explanatory layer: bilingual architecture, deployment, security, and portfolio docs
 |-- evals/                  # Validation layer: expected results, test topics, failure cases
-|-- notes/                  # Course-summary notes and learning artifacts
+|-- notes/                  # Internal notes and supporting learning artifacts
 |-- prompts/                # Prompt layer: system prompts and prompt versioning
-|-- screenshots/            # Evidence layer: screenshots grouped by assignment
+|-- screenshots/            # Evidence layer: screenshots grouped by workflow stage
 |-- scripts/                # Execution layer: local/VPS webhook tests and workflow sanitizer
 |-- workflows/              # Integration layer: sanitized n8n workflow exports
 |-- main.py                 # Minimal manual client for webhook smoke testing

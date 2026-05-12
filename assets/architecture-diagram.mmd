@@ -1,0 +1,8 @@
+flowchart TD
+    A[External Client / Python Script] --> B[n8n Webhook]
+    B --> C[n8n Auth Check]
+    C --> D[n8n OpenAI Text Node]
+    D --> E[n8n Set Node<br/>Build Image Prompt]
+    E --> F[n8n OpenAI Image Node]
+    F --> G[n8n HTTP Request Node<br/>Telegram sendPhoto]
+    G --> H[Telegram Channel]
